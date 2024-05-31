@@ -180,6 +180,7 @@ defmodule BlockScoutWeb.ApiRouter do
     scope "/addresses" do
       get("/", V2.AddressController, :addresses_list)
       get("/:address_hash_param", V2.AddressController, :address)
+      get("/:address_hash_param/refresh", V2.AddressController, :refresh)
       get("/:address_hash_param/tabs-counters", V2.AddressController, :tabs_counters)
       get("/:address_hash_param/counters", V2.AddressController, :counters)
       get("/:address_hash_param/token-balances", V2.AddressController, :token_balances)

@@ -40,16 +40,22 @@ defmodule Indexer.Fetcher.OnDemand.CoinBalance do
   def trigger_fetch(address) do
     latest_block_number = latest_block_number()
 
-    do_trigger_fetch(address, latest_block_number, stale_balance_window(latest_block_number))
+    case stale_balance_window(latest_block_number) do
+      {:error, _} ->
+        :current
 
-    # case stale_balance_window(latest_block_number) do
-    #   {:error, _} ->
-    #     :current
-
-    #   stale_balance_window ->
-    #     do_trigger_fetch(address, latest_block_number, stale_balance_window)
-    # end
+      stale_balance_window ->
+        do_trigger_fetch(address, latest_block_number, stale_balance_window)
+    end
   end
+
+  @spec trigger_fetch_update(Address.t()) :: balance_status
+  def trigger_fetch_update(address) do
+    latest_block_number = latest_block_number()
+
+    do_trigger_fetch(address, latest_block_number, latest_block_number)
+  end
+
 
   @spec trigger_historic_fetch(Hash.Address.t(), non_neg_integer()) :: balance_status
   def trigger_historic_fetch(address_hash, block_number) do
